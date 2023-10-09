@@ -4,22 +4,22 @@
 #include <sys/stat.h>
 #include <errno.h>
 
-void help_msg() {
-    puts("mkdir: missing operand\n\
-Try mkdir --help for more information");
-}
+#define PROG_NAME "mkdir"
+#define HELP_MSG "mkdir: missing operand\n\
+Try mkdir --help for more information"
 
-void mkdir_wrapper(char *dir, mode_t perms, bool v_flag) {
-    mkdir(dir, 0775);
-    if (v_flag)
-        printf("mkdir: created directory '%s\n'", dir);
+
+static void verbose(bool v_flag, const char *dir) {
+    if (v_flag && !errno)
+        printf("%s: created directory '%s'\n", PROG_NAME, dir);
 }
 
 void mkdir_p(char *dir, mode_t perms, bool v_flag) {
     for (int i = 0; dir[i]; ++i) {
         if (dir[i] == '/' || dir[i + 1] == '\0') {
             dir[i + (dir[i + 1] == '\0')] = '\0';
-            mkdir_wrapper(dir, perms, v_flag);
+            mkdir(dir, perms);
+            verbose(v_flag, dir);
             dir[i] = '/';
         }
     }
@@ -28,7 +28,7 @@ void mkdir_p(char *dir, mode_t perms, bool v_flag) {
 int main(int argc, char *argv[])
 {
     if (argc < 2 || (strcmp(argv[1], "--help") == 0)) {
-        help_msg();
+        puts(HELP_MSG);
         return 1;
     }
 
@@ -43,14 +43,17 @@ int main(int argc, char *argv[])
 
         }
     }
-    for (int i = 0; pargv[i]; ++i) {
-        if (p_flag)
-            mkdir_p(pargv[i], 0775, v_flag);
-        else
-            mkdir_wrapper(pargv[i], 0775, v_flag);
 
-        if (errno != 0)
-            perror(argv[0]);
+    for (int i = 0; pargv[i]; ++i) {
+        if (p_flag) {
+            mkdir_p(pargv[i], 0775, v_flag);
+        } else {
+            mkdir(pargv[i], 0775);
+            verbose(v_flag, pargv[i]);
+        }
+
+        if (errno)
+            perror(PROG_NAME);
     }
     return 0;
 }
