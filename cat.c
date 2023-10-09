@@ -4,7 +4,6 @@
 
 void print_file(FILE *stream, long file_size)
 {
-
     char *buf = malloc(file_size);
     while (fgets(buf, sizeof(buf), stream))
         printf("%s", buf);
