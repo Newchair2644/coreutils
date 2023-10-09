@@ -1,5 +1,4 @@
 # coreutils
-Unix core utilities implemented from scratch. The goal is to create a the full set of coreutils in modern C99 based on the UNIX v1 spec.
-A simple shell as well as basic file manipulation tools are already done, not sure if they are up to spec because I do not have access to documentation (yet).
+Unix core utilities implemented from scratch. The goal is to create a full documented set of coreutils in modern C99, not based on any os or spec, but just with whatever options feel useful to me.
 
-To compile simple run `make` and everything will compile to `./bin`. Before running `sh`, append `./bin` to you `PATH` with `PATH="${PATH}:${HOME}/.local/bin"`.
+To compile simple run `make` and everything will compile to `./bin`. Make sure to set your path temporarily like so: `PATH="${HOME}/.local/bin" bin/sh`.
